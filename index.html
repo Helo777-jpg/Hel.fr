@@ -41,6 +41,40 @@ L'Empire ottoman (en turc ottoman : دولت عليه عثمانیه / devlet-i 
         <button type="submit">Envoyer</button>
       </form>
     </div>
+  <script>
+    async function sendMessage() {
+    const message = document.getElementById("message").value;
+    const imageFile = document.getElementById("imageInput").files[0];
+
+    const formData = new FormData();
+    formData.append("message", message);
+
+    if (imageFile) {
+        formData.append("image", imageFile);
+    }
+
+    // envoi vers le serveur
+    const response = await fetch("/send-message", {
+        method: "POST",
+        body: formData
+    });
+
+    const data = await response.json();
+
+    // affichage dans le chat
+    const chat = document.getElementById("chat");
+
+    if (message) {
+        chat.innerHTML += `<p>${message}</p>`;
+    }
+
+    if (data.imageUrl) {
+        chat.innerHTML += `
+            <img src="${data.imageUrl}" width="200">
+        `;
+    }
+}
+</script>
 <img src="wise.jpg"/>
 <a href="Helsettings.html"><img src="Engrenage2.png"/></a>
 <p>
