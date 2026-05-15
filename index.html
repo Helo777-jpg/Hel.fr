@@ -32,17 +32,25 @@ L'Empire ottoman (en turc ottoman : دولت عليه عثمانیه / devlet-i 
 </h1>
 <P><HR NOSHADE></P>
 <div id="chat">
-      <div id="messages">
-        <!-- Les messages seront affichés ici -->
-      </div>
-      <form id="formulaire">
-        <input type="text" id="message" placeholder="Entrez un message">
-        <input type="file" id="imageInput" accept="image/*">
-        <button onclick="sendMessage()">Envoyer</button>
-      </form>
-    </div>
-  <script>
-    async function sendMessage() {
+  <div id="messages">
+    <!-- Les messages apparaissent ici -->
+  </div>
+
+  <form id="formulaire">
+    <input type="text" id="message" placeholder="Entrez un message">
+
+    <input type="file" id="imageInput" accept="image/*">
+
+    <button type="submit">Envoyer</button>
+  </form>
+</div>
+
+<script>
+const form = document.getElementById("formulaire");
+
+form.addEventListener("submit", async function(event) {
+    event.preventDefault(); // empêche le rechargement
+
     const message = document.getElementById("message").value;
     const imageFile = document.getElementById("imageInput").files[0];
 
@@ -53,27 +61,36 @@ L'Empire ottoman (en turc ottoman : دولت عليه عثمانیه / devlet-i 
         formData.append("image", imageFile);
     }
 
-    // envoi vers le serveur
-    const response = await fetch("/send-message", {
-        method: "POST",
-        body: formData
-    });
+    try {
+        const response = await fetch("/send-message", {
+            method: "POST",
+            body: formData
+        });
 
-    const data = await response.json();
+        const data = await response.json();
 
-    // affichage dans le chat
-    const chat = document.getElementById("chat");
+        const messages = document.getElementById("messages");
 
-    if (message) {
-        chat.innerHTML += `<p>${message}</p>`;
+        // afficher le texte
+        if (message) {
+            messages.innerHTML += `<p>${message}</p>`;
+        }
+
+        // afficher l'image
+        if (data.imageUrl) {
+            messages.innerHTML += `
+                <img src="${data.imageUrl}" width="200">
+            `;
+        }
+
+        // vider les champs
+        document.getElementById("message").value = "";
+        document.getElementById("imageInput").value = "";
+
+    } catch (error) {
+        console.error("Erreur :", error);
     }
-
-    if (data.imageUrl) {
-        chat.innerHTML += `
-            <img src="${data.imageUrl}" width="200">
-        `;
-    }
-}
+});
 </script>
 <img src="wise.jpg"/>
 <a href="Helsettings.html"><img src="Engrenage2.png"/></a>
