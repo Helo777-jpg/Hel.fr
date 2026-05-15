@@ -92,6 +92,42 @@ form.addEventListener("submit", async function(event) {
     }
 });
 </script>
+  <script>
+
+const socket = new WebSocket("ws://localhost:9999");
+
+socket.onmessage = function(event) {
+
+    const data = JSON.parse(event.data);
+
+    const messages = document.getElementById("messages");
+
+    // message texte
+    if (data.type === "text") {
+
+        messages.innerHTML += `
+            <p>${data.message}</p>
+        `;
+    }
+
+    // image
+    if (data.type === "image") {
+
+        messages.innerHTML += `
+            <img src="${data.imageUrl}" width="200">
+        `;
+    }
+
+    // message système
+    if (data.type === "system") {
+
+        messages.innerHTML += `
+            <em>${data.message}</em>
+        `;
+    }
+};
+
+</script>
 <img src="wise.jpg"/>
 <a href="Helsettings.html"><img src="Engrenage2.png"/></a>
 <p>
