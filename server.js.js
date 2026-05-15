@@ -26,13 +26,19 @@ wss.on('connection', (ws) => {
 
     ws.on('message', (message) => {
 
-        console.log("Message reçu :", message.toString());
+    const data = JSON.parse(message);
 
-        broadcast({
-            type: "text",
-            message: message.toString()
-        });
+    console.log(data);
+
+    broadcast({
+
+        type: "text",
+
+        username: data.username,
+
+        message: data.message
     });
+});
 
     ws.on('close', () => {
         const index = clients.indexOf(ws);
